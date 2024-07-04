@@ -31,12 +31,11 @@ public class AuthenticationConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/token/*").permitAll()
                         .requestMatchers("/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
                         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                        .authenticationProvider(authenticationProvider())
+                        .authenticationProvider(authenticationProvider())
                         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                         .csrf().disable();
         return http.build();
