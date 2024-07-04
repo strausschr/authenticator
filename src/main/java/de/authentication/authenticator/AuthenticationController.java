@@ -1,7 +1,8 @@
 package de.authentication.authenticator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
+import java.util.Date;
 
 @RestController
 public class AuthenticationController {
@@ -20,10 +21,9 @@ public class AuthenticationController {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private TokenService tokenService;
-
     private AuthenticationManager authenticationManager;
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     public AuthenticationController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -34,15 +34,14 @@ public class AuthenticationController {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
         if (authentication.isAuthenticated()) {
-            return new JwtResponseDTO(jwtService.generateToken(authRequestDTO.getUsername()));
+            String token = jwtService.generateToken(authRequestDTO.getUsername());
+            logger.info("Token: " + token);
+            Date gueltig = jwtService.extractExpiration(token);
+            logger.info("Gültig bis: " + gueltig);
+            return new JwtResponseDTO(token, gueltig.toString());
         } else {
             throw new UsernameNotFoundException("invalid user request..!!");
         }
-    }
-
-    @PostMapping("/token/create")
-    public JwtResponseDTO createToken(@RequestBody AuthRequestDTO tokenRequest) {
-        return tokenService.generateToken(tokenRequest);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
