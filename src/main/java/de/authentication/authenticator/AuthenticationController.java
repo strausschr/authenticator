@@ -29,7 +29,7 @@ public class AuthenticationController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/requestToken")
     public JwtResponseDTO login(@RequestBody AuthRequestDTO authRequestDTO) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));

@@ -8,8 +8,8 @@ export default defineConfig({
   server: {
     port: 3030,
     proxy: {
-      '/login': 'http://localhost:8080',
-      '/ping': 'http://localhost:8080'
+      '/api/requestToken': 'http://localhost:8080',
+      '/api/ping': 'http://localhost:8080'
     },
   }
 })
