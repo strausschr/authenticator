@@ -31,7 +31,7 @@ public class AuthenticationConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/requestToken/**").permitAll()
                         .anyRequest().authenticated()
                 )
                         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
