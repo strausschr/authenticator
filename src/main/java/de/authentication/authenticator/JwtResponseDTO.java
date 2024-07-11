@@ -9,9 +9,12 @@ public class JwtResponseDTO {
 
     public String gueltig;
 
-    public JwtResponseDTO(String accessToken, String gueltig) {
+    public String username;
+
+    public JwtResponseDTO(String accessToken, String gueltig, String username) {
         this.accessToken = accessToken;
         this.gueltig = gueltig;
+        this.username = username;
     }
 
     public String getAccessToken() {
@@ -28,5 +31,13 @@ public class JwtResponseDTO {
 
     public void setGueltig(String gueltig) {
         this.gueltig = gueltig;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
