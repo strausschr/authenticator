@@ -38,7 +38,7 @@ public class AuthenticationController {
             logger.info("Token: " + token);
             Date gueltig = jwtService.extractExpiration(token);
             logger.info("Gültig bis: " + gueltig);
-            return new JwtResponseDTO(token, gueltig.toString());
+            return new JwtResponseDTO(token, gueltig.toString(), generateUsername());
         } else {
             throw new UsernameNotFoundException("invalid user request..!!");
         }
@@ -52,6 +52,10 @@ public class AuthenticationController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String generateUsername() {
+        return "Jesus";
     }
 
 
