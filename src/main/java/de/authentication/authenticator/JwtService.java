@@ -1,21 +1,15 @@
 package de.authentication.authenticator;
 
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +26,14 @@ public class JwtService {
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public String extractUsernameClaim(String token) {
+        return extractClaim(token, claims -> claims.get("username", String.class));
+    }
+
+    public String extractPasswordClaim(String token) {
+        return extractClaim(token, claims -> claims.get("password", String.class));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -57,8 +59,10 @@ public class JwtService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String generateToken(String username){
+    public String generateToken(String username, String password){
         Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("password", password);
         return createToken(claims, username);
     }
 
