@@ -3,7 +3,7 @@ package de.authentication.authenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +29,8 @@ public class AuthenticationController {
     @PostMapping("/requestToken")
     public JwtResponseDTO login(@RequestBody AuthRequestDTO authRequestDTO) {
         try {
-            userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
-            String token = jwtService.generateToken(authRequestDTO.getUsername(), authRequestDTO.getPassword());
+            UserDetails ud = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
+            String token = jwtService.generateToken(authRequestDTO.getUsername(), authRequestDTO.getPassword(), ud.getAuthorities());
             logger.info("Token: " + token);
             Date gueltig = jwtService.extractExpiration(token);
             logger.info("Gültig bis: " + gueltig);
@@ -40,11 +40,19 @@ public class AuthenticationController {
         }
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/ping")
+    @GetMapping("/readRequest")
     public String test() {
         try {
             return "Welcome";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/writeRequest")
+    public String getRole() {
+        try {
+            return "WRITE";
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
