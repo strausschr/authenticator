@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -30,16 +33,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
         String password = null;
+        ArrayList roles = null;
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
             username = jwtService.extractUsernameClaim(token);
             password = jwtService.extractPasswordClaim(token);
+            roles = jwtService.extractRolesClaim(token);
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserInfo ui = new UserInfo();
             ui.setUsername(username);
             ui.setPassword(password);
+            Set<UserRole> sur = new HashSet<>();
+            for (Object s : roles) {
+                UserRole tmpRole = new UserRole();
+                tmpRole.setName(s.toString());
+                sur.add(tmpRole);
+            }
+            ui.setRoles(sur);
             UserDetails ud = new CustomUserDetails(ui);
             if(jwtService.validateToken(token, ud)){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ud, null, ud.getAuthorities());

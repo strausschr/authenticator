@@ -7,8 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class CustomUserDetails extends UserInfo implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private String username;
     private String password;
@@ -22,6 +23,7 @@ public class CustomUserDetails extends UserInfo implements UserDetails {
         for(UserRole role : byUsername.getRoles()){
 
             auths.add(new SimpleGrantedAuthority(role.getName().toUpperCase()));
+            auths.addAll(role.getPrivileges().stream().map(privilege -> new SimpleGrantedAuthority(privilege.getName().toUpperCase())).toList());
         }
         this.authorities = auths;
     }

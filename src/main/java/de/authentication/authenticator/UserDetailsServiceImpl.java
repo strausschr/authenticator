@@ -27,6 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         logger.info("User Authenticated Successfully..!!!");
         logger.info(user.getPassword());
+        user.getRoles().forEach(userRole -> logger.info(userRole.getName()));
         return new CustomUserDetails(user);
     }
 }
