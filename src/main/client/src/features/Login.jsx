@@ -6,6 +6,7 @@ import {
 import {
   setToken,
   setUsername,
+  setRollen,
 } from "./../store/utils"
 
 export async function loginAction({ request,params }) {
@@ -25,6 +26,7 @@ export async function loginAction({ request,params }) {
 
   setToken(json.accessToken)
   setUsername(json.username)
+  setRollen(json.roles)
 
   return redirect("/welcome")
 }

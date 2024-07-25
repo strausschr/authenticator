@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @RestController
@@ -21,6 +22,9 @@ public class AuthenticationController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     public AuthenticationController() {
@@ -29,12 +33,16 @@ public class AuthenticationController {
     @PostMapping("/requestToken")
     public JwtResponseDTO login(@RequestBody AuthRequestDTO authRequestDTO) {
         try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
             UserDetails ud = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
             String token = jwtService.generateToken(authRequestDTO.getUsername(), authRequestDTO.getPassword(), ud.getAuthorities());
             logger.info("Token: " + token);
             Date gueltig = jwtService.extractExpiration(token);
             logger.info("Gültig bis: " + gueltig);
-            return new JwtResponseDTO(token, gueltig.toString(), generateUsername());
+            ArrayList roles = jwtService.extractRolesClaim(token);
+            logger.info("Rollen " + roles);
+            return new JwtResponseDTO(token, gueltig.toString(), generateUsername(), roles);
         } catch (Exception e) {
             throw new UsernameNotFoundException("invalid user request..!!");
         }

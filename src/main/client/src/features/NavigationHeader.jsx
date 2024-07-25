@@ -20,6 +20,9 @@ export function NavigationHeader() {
   <div>
   <Link to="/oni">Oni</Link>
   </div>
+  <div>
+  <Link to="/private">Privat</Link>
+  </div>
   <Outlet/>
   </div>
   </>
