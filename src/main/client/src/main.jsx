@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom/client"
 import {
   createBrowserRouter,
+  Outlet,
   RouterProvider,
 } from "react-router-dom"
 import {
@@ -13,26 +14,53 @@ import {
   Welcome,
 } from "./features/Welcome"
 import {
-  Login,
+  Oni,
+} from "./features/Oni"
+import {
+  Login, loginAction
 } from "./features/Login"
+import {
+  welcomeLoader, 
+} from "./features/welcomeActions"
+import {
+  oniLoader, 
+} from "./features/oniActions"
+import {
+  NavigationHeader,
+} from "./features/NavigationHeader"
 import "./index.css"
 
 let router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
-    errorElement: <ErrorPage />
+    element: <NavigationHeader />,
+    children:[
+        {
+            index: true,
+            element: <Root />,
+            errorElement: <ErrorPage />,
+            loader: welcomeLoader,
+          },
+        {
+        path: "/welcome",
+        element: <Welcome />,
+        errorElement: <ErrorPage />,
+        loader: welcomeLoader,
+      },
+      {
+        path: "/oni",
+        element: <Oni />,
+        errorElement: <ErrorPage />,
+        loader: oniLoader,
+      }]
   },
   {
     path: "/login",
     element: <Login />,
-    errorElement: <ErrorPage />
+    errorElement: <ErrorPage />,
+    action: loginAction,
   },
-  {
-    path: "/welcome",
-    element: <Welcome />,
-    errorElement: <ErrorPage />
-  },
+
 ])
 
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -9,7 +9,7 @@ export default defineConfig({
     port: 3030,
     proxy: {
       '/api/requestToken': 'http://localhost:8080',
-      '/api/ping': 'http://localhost:8080'
+      '/api/readRequest': 'http://localhost:8080'
     },
   }
 })
