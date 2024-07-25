@@ -1,6 +1,7 @@
 const state = {
   token: "",
-  username: ""
+  username: "",
+  rollen: ""
 }
 
 export function setToken(token) {
@@ -19,3 +20,10 @@ export function getUsername() {
   return state.username
 }
 
+export function setRollen(rollen) {
+  state.rollen = rollen
+}
+
+export function getRollen() {
+  return state.rollen
+}

@@ -1,7 +1,9 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Outlet,
   Route,
+  Navigate,
 } from "react-router-dom"
 import {
   Root,
@@ -22,11 +24,17 @@ import {
   oniLoader, 
 } from "./features/oniActions"
 import {
+  Private, 
+} from "./features/Private"
+import {
   ErrorPage,
 } from "./error-page"
 import { 
   NavigationHeader, 
 } from "./features/NavigationHeader"
+import {
+  getRollen,
+} from "./store/utils"
 
 export const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -47,11 +55,21 @@ export const Router = createBrowserRouter(
             loader={welcomeLoader} />
           <Route 
             path= "/oni"
-            element={<Oni />}
+            element={
+              <ProtectedRoutes>
+                <Oni />
+              </ProtectedRoutes>}
             errorElement={<ErrorPage />}
             loader={oniLoader} />
+          <Route
+            path={"/private"}
+            element={
+              <ProtectedRoutes>
+                <Private />
+              </ProtectedRoutes>}
+            errorElement={<ErrorPage />} /> 
+          </Route>            
       </Route>
-    </Route>
     <Route
       path={"/login"}
       element={<Login />}
@@ -61,6 +79,15 @@ export const Router = createBrowserRouter(
   )
 )
 
-function PrivateRoutes() {
-  return <Welcome />
+function ProtectedRoutes({ children }) {
+  console.log(getRollen())
+
+  const rollen = getRollen()
+
+  const items = rollen.filter((role) => role == "READ")
+  if (items != "") {
+    return children
+  }
+  return <Navigate to={"/login"} />
+
 }

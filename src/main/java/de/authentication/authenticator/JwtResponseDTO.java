@@ -1,6 +1,7 @@
 package de.authentication.authenticator;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class JwtResponseDTO {
@@ -11,10 +12,13 @@ public class JwtResponseDTO {
 
     public String username;
 
-    public JwtResponseDTO(String accessToken, String gueltig, String username) {
+    public ArrayList roles;
+
+    public JwtResponseDTO(String accessToken, String gueltig, String username, ArrayList roles) {
         this.accessToken = accessToken;
         this.gueltig = gueltig;
         this.username = username;
+        this.roles = roles;
     }
 
     public String getAccessToken() {
@@ -39,5 +43,13 @@ public class JwtResponseDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public ArrayList getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList roles) {
+        this.roles = roles;
     }
 }
